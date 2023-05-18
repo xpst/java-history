@@ -10,16 +10,16 @@ public class CatchMultiple {
     don’t use child class.
      */
 
-    public static class FirstException extends Exception {
+    static class FirstException extends Exception {
     }
 
-    public static class SecondException extends Exception {
+    static class SecondException extends Exception {
     }
 
-    public static class ThirdException extends Exception {
+    static class ThirdException extends Exception {
     }
 
-    public static void rethrowException(String exceptionName) throws FirstException, SecondException, ThirdException {
+    static void rethrowException(String exceptionName) throws FirstException, SecondException, ThirdException {
         switch (exceptionName) {
             case "First":
                 throw new FirstException();
