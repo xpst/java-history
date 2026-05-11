@@ -1,6 +1,6 @@
 # Java Evolution — Features & Deprecations from Java 7 to Today
 
-This repository pairs **runnable Java code examples** for every release from Java 7 through Java 25 with a **static reference website** summarizing each release's headline features and deprecations.
+This repository pairs **runnable Java code examples** for every release from Java 7 through Java 26 with a **static reference website** summarizing each release's headline features and deprecations.
 
 The two halves reinforce each other: the website shows what changed in each release at a glance; the per-version Maven modules let you compile, run, and test the actual feature in code.
 
@@ -8,11 +8,11 @@ The two halves reinforce each other: the website shows what changed in each rele
 
 | Path | What lives here |
 | --- | --- |
-| `java7/` … `java25/` | One standalone Maven module per Java release. Each holds 1–3 feature demos plus matching JUnit 5 tests. |
+| `java7/` … `java26/` | One standalone Maven module per Java release. Each holds 1–3 feature demos plus matching JUnit 5 tests. |
 | `docs/` | The static reference website (HTML / CSS / React + Babel). Served by GitHub Pages. |
 | `docs/vendor/` | React, ReactDOM, Babel-standalone, and Google Fonts (CSS + woff2) vendored locally so the site works offline. |
 | `maven-settings.xml` | Project-local Maven settings file used by the build wrapper. |
-| `build.sh` | Convenience wrapper that pins JDK 25 and dispatches to one (or all) of the per-version modules. |
+| `build.sh` | Convenience wrapper that pins a JDK per module (JDK 25 by default, JDK 26 for `java26/`) and dispatches to one (or all) of the per-version modules. |
 
 There is no aggregator `pom.xml` at the repo root — each `java<N>/` directory is its own independently buildable Maven project.
 
@@ -74,10 +74,11 @@ Per-module READMEs:
 | [java23](java23/README.md) | 2024 | Markdown in Javadoc, GC info |
 | [java24](java24/README.md) | 2025 | Stream gatherers, Class-File API |
 | [java25](java25/README.md) | 2025 LTS | Compact source files & instance `main`, module imports, scoped values |
+| [java26](java26/README.md) | 2026 | HTTP/3 in `HttpClient` (preview-heavy release) |
 
 ## Building & testing
 
-The repo pins **JDK 25** and a project-local `maven-settings.xml`; the `build.sh` wrapper handles both:
+The repo pins **JDK 25** by default (and **JDK 26** for `java26/`), plus a project-local `maven-settings.xml`; the `build.sh` wrapper handles both:
 
 ```bash
 ./build.sh                                          # build every module (clean package)
@@ -88,7 +89,7 @@ The repo pins **JDK 25** and a project-local `maven-settings.xml`; the `build.sh
 ./build.sh --help                                   # usage
 ```
 
-The wrapper sets `JAVA_HOME` to the pinned JDK location, prepends its `bin/` to `PATH`, and passes `-s ./maven-settings.xml` so the project always builds against the same Maven configuration. Override the JDK location with `JAVA_HOME_OVERRIDE=/path/to/jdk` if needed.
+The wrapper resolves a JDK per module (JDK 25 for `java7`…`java25`, JDK 26 for `java26`), exports `JAVA_HOME` accordingly, prepends its `bin/` to `PATH`, and passes `-s ./maven-settings.xml` so the project always builds against the same Maven configuration. Override the JDK location with `JAVA_HOME_OVERRIDE=/path/to/jdk` if needed; the override wins over the per-module map.
 
 Direct `mvn` invocation also works for any module:
 
@@ -105,6 +106,7 @@ JAVA_HOME=/workspace/soft/jdk-25.0.3+9 PATH="$JAVA_HOME/bin:$PATH" \
 3. Add feature classes under `src/main/java/itb/java/examples/java<N>/<Feature>.java`, each with a `main()` that demonstrates the feature.
 4. Add matching `<Feature>Test.java` files under `src/test/java/itb/java/examples/java<N>/` in the **same package**.
 5. Update `java<N>/README.md` with a feature index.
-6. Optionally add a matching `docs/data/javaN.js` (push one version object onto `window.JAVA_DATA`) and register it with a `<script src="data/javaN.js"></script>` line in `docs/index.html`.
+6. If `<release>N</release>` needs a newer JDK than the default, add a one-line entry to `jdk_for_module()` in `build.sh` (e.g., `java27) echo "/workspace/soft/jdk-27.x" ;;`).
+7. Optionally add a matching `docs/data/javaN.js` (push one version object onto `window.JAVA_DATA`) and register it with a `<script src="data/javaN.js"></script>` line in `docs/index.html`.
 
 Run `./build.sh java<N> test` to verify; then `./build.sh` to confirm the full sweep is still green.

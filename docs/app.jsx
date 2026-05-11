@@ -370,6 +370,11 @@ function App() {
   );
   const firstVersion = data[0]?.version;
   const lastVersion  = data[data.length - 1]?.version;
+  const lastDate     = data[data.length - 1]?.date;            // e.g. "March 17, 2026"
+  const lastMonthYear = (() => {                                // → "Mar 2026"
+    const m = lastDate?.match(/^(\w+)\s+\d+,\s+(\d{4})$/);
+    return m ? `${m[1].slice(0, 3)} ${m[2]}` : "";
+  })();
 
   // Count matching features for the results pill
   const matchCount = useMemo(() => {
@@ -485,7 +490,7 @@ function App() {
 
         <footer className="foot">
           <span>Java Evolution · A reference cheat-sheet · Built offline-first</span>
-          <span>Data current as of Java 25 (Sep 2025) · No external network calls</span>
+          <span>Data current as of Java {lastVersion} ({lastMonthYear}) · No external network calls</span>
         </footer>
       </main>
     </div>

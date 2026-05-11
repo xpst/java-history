@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build per-version Java Evolution example modules with a pinned JDK 25.
+# Build per-version Java Evolution example modules with a per-module JDK pin.
 #
 # Layout: each java<N>/ directory is a standalone Maven project (no parent pom).
 #
@@ -15,34 +15,37 @@
 # in the args, `clean package` is prepended.
 #
 # Why this script exists: the toolchain pins JDK 25 at /workspace/soft/jdk-25.0.3+9
-# and uses the repo-local maven-settings.xml instead of whatever lives at
-# ~/.m2/settings.xml. Doing those by hand for every module is error-prone,
-# so the wrapper enforces them.
+# as the default for java7..java25, and JDK 26 at /workspace/soft/jdk-26.0.1 for
+# the java26/ module (whose --release 26 requires javac 26). It also passes the
+# repo-local maven-settings.xml instead of whatever lives at ~/.m2/settings.xml.
+# JAVA_HOME_OVERRIDE=/path/to/jdk wins over the per-module map for ad-hoc
+# experiments.
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SETTINGS_FILE="${SCRIPT_DIR}/maven-settings.xml"
-JDK_HOME="${JAVA_HOME_OVERRIDE:-/workspace/soft/jdk-25.0.3+9}"
+
+DEFAULT_JDK="/workspace/soft/jdk-25.0.3+9"
+
+# Per-module JDK overrides for modules whose --release N exceeds what the
+# default JDK's javac accepts. Add new lines here as future releases land.
+jdk_for_module() {
+  case "$1" in
+    java26) echo "/workspace/soft/jdk-26.0.1" ;;
+    *)      echo "${DEFAULT_JDK}" ;;
+  esac
+}
 
 if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
   awk '/^#!/ {next} /^[^#]/ {exit} {sub(/^# ?/, ""); print}' "${BASH_SOURCE[0]}"
   exit 0
 fi
 
-if [[ ! -x "${JDK_HOME}/bin/java" ]]; then
-  echo "ERROR: JDK 25 not found at ${JDK_HOME}/bin/java" >&2
-  echo "       Set JAVA_HOME_OVERRIDE to a working JDK 25 directory and retry." >&2
-  exit 1
-fi
-
 if [[ ! -f "${SETTINGS_FILE}" ]]; then
   echo "ERROR: maven-settings.xml not found at ${SETTINGS_FILE}" >&2
   exit 1
 fi
-
-export JAVA_HOME="${JDK_HOME}"
-export PATH="${JDK_HOME}/bin:${PATH}"
 
 # If the first arg looks like a module dir (java<N>), pull it off as the target module.
 TARGET_MODULE=""
@@ -68,14 +71,29 @@ fi
 
 run_in_module() {
   local module_dir="$1"
+  local module_name
+  module_name="$(basename "${module_dir}")"
+
   if [[ ! -f "${module_dir}/pom.xml" ]]; then
     echo "ERROR: no pom.xml in ${module_dir}" >&2
     return 1
   fi
-  echo "==> JAVA_HOME=${JAVA_HOME}"
+
+  local jdk_home="${JAVA_HOME_OVERRIDE:-$(jdk_for_module "${module_name}")}"
+  if [[ ! -x "${jdk_home}/bin/java" ]]; then
+    echo "ERROR: JDK for ${module_name} not found at ${jdk_home}/bin/java" >&2
+    echo "       Set JAVA_HOME_OVERRIDE=/path/to/jdk and retry." >&2
+    return 1
+  fi
+
+  echo "==> JAVA_HOME=${jdk_home}"
   echo "==> cwd=${module_dir}"
   echo "==> mvn -s ${SETTINGS_FILE} ${ARGS[*]}"
-  (cd "${module_dir}" && mvn -s "${SETTINGS_FILE}" "${ARGS[@]}")
+  (
+    export JAVA_HOME="${jdk_home}"
+    export PATH="${jdk_home}/bin:${PATH}"
+    cd "${module_dir}" && mvn -s "${SETTINGS_FILE}" "${ARGS[@]}"
+  )
 }
 
 if [[ -n "${TARGET_MODULE}" ]]; then
