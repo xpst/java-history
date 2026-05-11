@@ -34,7 +34,7 @@ The site is published from the `/docs` folder on the default branch: **<https://
 
 ### Site data
 
-`docs/data.js` is the single source of truth for all version entries on the site. Each version is an object with `version`, `date`, `lts`, `blurb`, a `features` array, and a `deprecations` array. Add or amend entries there to update the site.
+The site is data-driven from `docs/data/javaN.js` — one file per Java release. `docs/data.js` is a tiny initializer that creates `window.JAVA_DATA = []`; each `docs/data/javaN.js` then pushes one version object onto it. Each version object has `version`, `date`, `lts`, `blurb`, a `features` array, and a `deprecations` array. Add or amend the relevant `docs/data/javaN.js` to update the site.
 
 ## Java code examples
 
@@ -105,6 +105,6 @@ JAVA_HOME=/workspace/soft/jdk-25.0.3+9 PATH="$JAVA_HOME/bin:$PATH" \
 3. Add feature classes under `src/main/java/itb/java/examples/java<N>/<Feature>.java`, each with a `main()` that demonstrates the feature.
 4. Add matching `<Feature>Test.java` files under `src/test/java/itb/java/examples/java<N>/` in the **same package**.
 5. Update `java<N>/README.md` with a feature index.
-6. Optionally add a matching entry to `docs/data.js` so the site picks up the new release.
+6. Optionally add a matching `docs/data/javaN.js` (push one version object onto `window.JAVA_DATA`) and register it with a `<script src="data/javaN.js"></script>` line in `docs/index.html`.
 
 Run `./build.sh java<N> test` to verify; then `./build.sh` to confirm the full sweep is still green.
