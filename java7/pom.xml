@@ -1,39 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-
-    <parent>
-        <groupId>itb.java.examples</groupId>
-        <artifactId>java-examples</artifactId>
-        <version>1.0.0</version>
-    </parent>
-
-
     <modelVersion>4.0.0</modelVersion>
+
+    <groupId>itb.java.examples</groupId>
     <artifactId>java7</artifactId>
     <version>1.0.0</version>
 
-    <dependencies>
-        <!-- Зависимости, специфичные для BinaryLiterals -->
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <junit.jupiter.version>5.10.2</junit.jupiter.version>
+    </properties>
 
-        <!-- Использование управляемой зависимости JUnit из родительского проекта -->
+    <dependencies>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <!-- Плагины сборки, специфичные для BinaryLiterals -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
                 <configuration>
-                    <source>7</source>
-                    <target>7</target>
+                    <!-- JDK 25's javac no longer accepts release=7 (Java 8 is the minimum it can
+                         target). The demos still showcase the Java 7-era source-level features
+                         (binary literals, switch on String, multi-catch, try-with-resources,
+                         diamond operator, underscore separators) — those have been valid Java
+                         since 7 and compile cleanly to Java 8 bytecode. -->
+                    <release>8</release>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
             </plugin>
         </plugins>
     </build>

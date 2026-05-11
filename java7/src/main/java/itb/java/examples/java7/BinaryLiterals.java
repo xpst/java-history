@@ -111,72 +111,58 @@ public class BinaryLiterals {
 
     public class State {
         public State nop() {
-            // Реализация для команды nop
             return this;
         }
 
         public State copyAccumTo(int register) {
-            // Реализация для команды copyAccumTo
             return this;
         }
 
         public State addToAccum(int register) {
-            // Реализация для команды addToAccum
             return this;
         }
 
         public State subFromAccum(int register) {
-            // Реализация для команды subFromAccum
             return this;
         }
 
         public State multiplyAccumBy(int register) {
-            // Реализация для команды multiplyAccumBy
             return this;
         }
 
         public State divideAccumBy(int register) {
-            // Реализация для команды divideAccumBy
             return this;
         }
 
         public State setAccumFrom(int register) {
-            // Реализация для команды setAccumFrom
             return this;
         }
 
         public State returnFromCall() {
-            // Реализация для команды returnFromCall
             return this;
         }
 
         public State jumpTo(int address) {
-            // Реализация для команды jumpTo
             return this;
         }
 
         public State jumpIfAccumZeroTo(int address) {
-            // Реализация для команды jumpIfAccumZeroTo
             return this;
         }
 
         public State jumpIfAccumNonzeroTo(int address) {
-            // Реализация для команды jumpIfAccumNonzeroTo
             return this;
         }
 
         public State setAccumFromMemory(int address) {
-            // Реализация для команды setAccumFromMemory
             return this;
         }
 
         public State writeAccumToMemory(int address) {
-            // Реализация для команды writeAccumToMemory
             return this;
         }
 
         public State callTo(int address) {
-            // Реализация для команды callTo
             return this;
         }
     }

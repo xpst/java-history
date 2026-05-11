@@ -1,1 +1,18 @@
 /.idea/
+
+# Claude Code
+/.claude/
+/CLAUDE.md
+/CLAUDE.local.md
+**/CLAUDE.local.md
+.claude/
+
+# Personal setup notes (not for the public repo)
+/instruction.md
+/changelog.md
+
+# Maven build output
+target/
+
+# Playwright browser cache from local site testing
+/.playwright-mcp/
