@@ -10,6 +10,7 @@
 # Personal setup notes (not for the public repo)
 /instruction.md
 /changelog.md
+/architecture.md
 
 # Maven build output
 target/
