@@ -15,4 +15,4 @@
 target/
 
 # Playwright browser cache from local site testing
-/.playwright-mcp/
+**/.playwright-mcp/
