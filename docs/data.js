@@ -9,7 +9,7 @@ window.JAVA_DATA = [
   {
     version: 8,
     date: "March 18, 2014",
-    codename: "Spider",
+    codename: null,
     lts: true,
     blurb: "The watershed release. Lambdas, the Stream API, and a brand-new date/time library reshaped how Java code is written more than any version before or since.",
     features: [
@@ -65,13 +65,12 @@ double avgAge = people.parallelStream()
 
 String displayName = user
     .map(User::getName)
-    .filter(n -> !n.isBlank())
+    .filter(n -> !n.isEmpty())
     .orElse("Anonymous");
 
-user.ifPresentOrElse(
-    u -> log.info("found {}", u),
-    () -> log.warn("missing user {}", id)
-);`
+user.ifPresent(u -> log.info("found {}", u));
+if (!user.isPresent()) log.warn("missing user {}", id);
+// Note: Optional.ifPresentOrElse and String.isBlank arrived in Java 9 and 11.`
         }
       },
       {
@@ -122,10 +121,11 @@ Duration timeLeft = Duration.between(Instant.now(), meeting.toInstant());`
     .supplyAsync(() -> http.get(url))
     .thenApply(this::parse)
     .thenCompose(this::enrich)
-    .exceptionally(ex -> "fallback: " + ex.getMessage())
-    .orTimeout(2, TimeUnit.SECONDS);
+    .exceptionally(ex -> "fallback: " + ex.getMessage());
 
-page.thenAccept(System.out::println);`
+page.thenAccept(System.out::println);
+// Note: .orTimeout / .completeOnTimeout arrived in Java 9.
+// In Java 8 you wired a ScheduledExecutorService to complete the future yourself.`
         }
       }
     ],
@@ -815,7 +815,7 @@ Class<?> hidden = lookup
     ],
     deprecations: [
       { what: "Nashorn JavaScript engine", kind: "removed", note: "Removed entirely. Use GraalJS for embedded JS — same javax.script SPI, modern ECMAScript support." },
-      { what: "Biased locking", kind: "deprecated", note: "Old throughput optimization for uncontended locks. Disabled by default; eventually removed in 18." },
+      { what: "Biased locking", kind: "deprecated", note: "Old throughput optimization for uncontended locks. Disabled by default in 15 (JEP 374); retained as a deprecated, opt-in feature in later releases." },
       { what: "RMI Activation", kind: "deprecated", note: "java.rmi.activation marked for removal — a rarely-used corner of RMI. Removed in Java 17." },
       { what: "Solaris and SPARC ports", kind: "removed", note: "Gone for good in 15." }
     ]
@@ -1285,9 +1285,11 @@ Thread.startVirtualThread(() -> {
           lang: "java",
           code: `try (Arena arena = Arena.ofConfined()) {
     MemorySegment buf = arena.allocate(64);
-    buf.setString(0, "hello");
-    System.out.println(buf.getString(0));
-}`
+    buf.setUtf8String(0, "hello");
+    System.out.println(buf.getUtf8String(0));
+}
+// Note: setUtf8String / getUtf8String were renamed to setString / getString
+// when FFM went final in Java 22.`
         }
       }
     ],
@@ -1407,8 +1409,7 @@ String f = FMT."\\{name}%-10s is \\{age}%3d years old";`
     deprecations: [
       { what: "Applet API", kind: "removed", note: "java.applet finally gone after a decade of obsolescence." },
       { what: "Thread suspend/resume", kind: "removed", note: "The deadlock-prone Thread.suspend / Thread.resume methods are gone." },
-      { what: "Windows 32-bit x86 port", kind: "deprecated for removal", note: "32-bit Windows builds set for removal — virtual threads need a 64-bit host." },
-      { what: "Parallel-class-loading workarounds", kind: "behavior change", note: "Class loaders now parallel-capable by default. Custom CLs may need updates." }
+      { what: "Windows 32-bit x86 port", kind: "deprecated for removal", note: "32-bit Windows builds set for removal (JEP 449) — virtual threads need a 64-bit host. Actually removed in Java 25." }
     ]
   },
 
@@ -1537,7 +1538,6 @@ Gatherer<Integer, ?, Integer> runningSum = Gatherer.ofSequential(
       }
     ],
     deprecations: [
-      { what: "32-bit x86 port (Windows)", kind: "removed", note: "Windows x86 builds removed; only 64-bit remains." },
       { what: "Old GC flags", kind: "obsolete", note: "Several long-deprecated GC tuning flags removed or made no-ops." }
     ]
   },
@@ -1578,11 +1578,11 @@ Gatherer<Integer, ?, Integer> runningSum = Gatherer.ofSequential(
           code: `import module java.base;
 import module java.net.http;
 
-void main() {
+void main() throws Exception {
     var client = HttpClient.newHttpClient();
     var req    = HttpRequest.newBuilder(URI.create("https://example.com")).build();
     var body   = client.send(req, HttpResponse.BodyHandlers.ofString()).body();
-    IO.println(body);
+    println(body);   // top-level auto-imported in JEP 477 (Java 23 preview)
 }`
         }
       },
@@ -1854,6 +1854,7 @@ Files.writeString(Path.of("cert.out.pem"), back);`
     ],
     deprecations: [
       { what: "Non-generational ZGC", kind: "removed", note: "Legacy ZGC mode gone; -XX:+ZGenerational is now the only behavior under -XX:+UseZGC." },
+      { what: "Windows 32-bit x86 port", kind: "removed", note: "Windows x86 builds removed (JEP 479) after being deprecated for removal in 21. Use 64-bit Windows." },
       { what: "32-bit ARM port (Linux)", kind: "removed", note: "Linux armhf builds removed. Use aarch64." },
       { what: "Old String template syntax", kind: "absent", note: "The 21–22 STR.\"...\" syntax remains withdrawn pending a future redesign; don't rely on it." },
       { what: "Legacy locale data overrides", kind: "behavior change", note: "Final cleanup pass on locale data; verify locale-sensitive formatting if you've pinned older overrides." }
