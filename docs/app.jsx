@@ -219,12 +219,16 @@ function FilterChip({ id, label, active, onClick }) {
 
 /* ------- Sidebar ------- */
 function Sidebar({ data, activeVersion, onJump, theme, toggleTheme }) {
+  const firstYear    = data[0]?.date?.match(/\d{4}/)?.[0];
+  const lastYear     = data[data.length - 1]?.date?.match(/\d{4}/)?.[0];
+  const firstVersion = data[0]?.version;
+  const lastVersion  = data[data.length - 1]?.version;
   return (
     <aside className="sidebar">
       <div className="brand-block">
-        <div className="eyebrow">Reference · 2014 → 2025</div>
+        <div className="eyebrow">Reference · {firstYear} → {lastYear}</div>
         <div className="title">Java <em>Evolution</em></div>
-        <div className="sub">Features &amp; deprecations from Java 8 to Java 25</div>
+        <div className="sub">Features &amp; deprecations from Java {firstVersion} to Java {lastVersion}</div>
       </div>
 
       <nav className="nav-section" aria-label="Versions">
@@ -273,7 +277,7 @@ function App() {
   const [query, setQuery] = useState("");
   const [tags, setTags] = useState(() => new Set(TAG_META.map(t => t.id)));
   const [hidePreview, setHidePreview] = useState(false);
-  const [activeVersion, setActiveVersion] = useState(8);
+  const [activeVersion, setActiveVersion] = useState(() => window.JAVA_DATA[0]?.version ?? 8);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -360,6 +364,12 @@ function App() {
     () => data.reduce((acc, v) => acc + v.deprecations.length, 0),
     [data]
   );
+  const ltsCount = useMemo(
+    () => data.filter(v => v.lts).length,
+    [data]
+  );
+  const firstVersion = data[0]?.version;
+  const lastVersion  = data[data.length - 1]?.version;
 
   // Count matching features for the results pill
   const matchCount = useMemo(() => {
@@ -408,17 +418,17 @@ function App() {
 
       <main className="main">
         <section className="hero">
-          <h1>From lambdas to Loom: <em>twelve years</em><br/>of Java, one page.</h1>
+          <h1>Every release, every feature —<br/><em>one page</em> of Java.</h1>
           <p className="lede">
-            A working reference covering every release from Java 8 through Java 25 — the
+            A working reference covering every release from Java {firstVersion} through Java {lastVersion} — the
             features that mattered, what they replaced, what got removed along the way,
             and what each one looks like in actual code. Filter by category, search by
             name, toggle previews on or off. Use <kbd>⌘K</kbd> to search, <kbd>↑</kbd>/<kbd>↓</kbd> to
             move between versions.
           </p>
           <div className="stats">
-            <div className="stat"><span className="v">18</span><span className="k">Releases</span></div>
-            <div className="stat"><span className="v">5</span><span className="k">LTS versions</span></div>
+            <div className="stat"><span className="v">{data.length}</span><span className="k">Releases</span></div>
+            <div className="stat"><span className="v">{ltsCount}</span><span className="k">LTS versions</span></div>
             <div className="stat"><span className="v">{totalFeatures}</span><span className="k">Features</span></div>
             <div className="stat"><span className="v">{totalDeprecations}</span><span className="k">Deprecations</span></div>
           </div>

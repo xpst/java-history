@@ -1,4 +1,4 @@
-# Java Evolution — Features & Deprecations from Java 8 to Today
+# Java Evolution — Features & Deprecations from Java 7 to Today
 
 This repository pairs **runnable Java code examples** for every release from Java 7 through Java 25 with a **static reference website** summarizing each release's headline features and deprecations.
 
