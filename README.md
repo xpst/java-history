@@ -30,7 +30,7 @@ python3 -m http.server 8000
 
 ### Published on GitHub Pages
 
-The site is published from the `/docs` folder on the default branch. After enabling GitHub Pages with **Settings → Pages → Source: Deploy from a branch → Branch: main, Folder: /docs**, the URL pattern is `https://<github-username>.github.io/<repo-name>/`.
+The site is published from the `/docs` folder on the default branch: **<https://xpst.github.io/java-history/>**.
 
 ### Site data
 
