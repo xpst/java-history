@@ -15,9 +15,10 @@
 # in the args, `clean package` is prepended.
 #
 # Why this script exists: the toolchain pins JDK 25 at /workspace/soft/jdk-25.0.3+9
-# as the default for java7..java25, and JDK 26 at /workspace/soft/jdk-26.0.1 for
-# the java26/ module (whose --release 26 requires javac 26). It also passes the
-# repo-local maven-settings.xml instead of whatever lives at ~/.m2/settings.xml.
+# as the default for java7..java25, and newer JDKs for the modules that need them
+# (JDK 26 for java26/, JDK 27 for java27/ — each --release N requires a javac of at
+# least N). It also passes the repo-local maven-settings.xml instead of whatever
+# lives at ~/.m2/settings.xml.
 # JAVA_HOME_OVERRIDE=/path/to/jdk wins over the per-module map for ad-hoc
 # experiments.
 
@@ -33,6 +34,7 @@ DEFAULT_JDK="/workspace/soft/jdk-25.0.3+9"
 jdk_for_module() {
   case "$1" in
     java26) echo "/workspace/soft/jdk-26.0.1" ;;
+    java27) echo "/workspace/soft/jdk-27" ;;
     *)      echo "${DEFAULT_JDK}" ;;
   esac
 }

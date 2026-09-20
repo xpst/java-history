@@ -211,7 +211,12 @@ f.set(obj, 200);   // ← JDK 26: warning. Future release: blocked.
       { what: "MulticastSocket / DatagramSocketImpl legacy TTL methods", kind: "removed", note: "Removed: MulticastSocket.setTTL(byte)/getTTL()/send(DatagramPacket, byte) and DatagramSocketImpl.setTTL/getTTL. Use the int-based setTimeToLive / getTimeToLive instead (in place since JDK 1.2)." },
       { what: "java.net.SocketPermission", kind: "deprecated", note: "Deprecated for removal — useless now that the Security Manager is no longer supported." },
       { what: "Socket / ServerSocket / SocketImpl .setPerformancePreferences", kind: "deprecated", note: "Deprecated for removal. The 1.5-era hint methods have been no-ops in practice for a long time." },
-      { what: "java.sql.SQLPermission", kind: "deprecated", note: "Deprecated for removal alongside SocketPermission for the same Security-Manager reason." }
+      { what: "java.sql.SQLPermission", kind: "deprecated", note: "Deprecated for removal alongside SocketPermission for the same Security-Manager reason." },
+      { what: "jrunscript tool", kind: "removed", note: "The experimental, unsupported script-shell tool is gone from the JDK (JDK-8367157). It outlived Nashorn, which was removed back in 15; jshell covers the interactive-Java case." },
+      { what: "jdk.jsobject module", kind: "removed", note: "The netscape.javascript bridge module is gone from the JDK (JDK-8359760) — it ships with JavaFX 24 and later instead." },
+      { what: "Finalization in javax.imageio.stream", kind: "removed", note: "ImageInputStreamImpl and all its subclasses no longer use Object finalization (JDK-8277585). Part of the long finalization endgame started by JEP 421; close your ImageIO streams explicitly." },
+      { what: "InfiniBand Sockets Direct Protocol (SDP)", kind: "removed", note: "Built-in Linux SDP support, the com.sun.sdp.conf system property, and the sdp.conf.template sample are removed (JDK-8366575). SDP has been unsupported by mainstream distros for years." },
+      { what: "Legacy JVM heap / JIT tuning flags", kind: "deprecated", note: "AggressiveHeap (JDK-8370813), MaxRAM (JDK-8369346), AlwaysActAsServerClassMachine / NeverActAsServerClassMachine (JDK-8370843), and -Xmaxjitcodesize (JDK-8213762) are all deprecated for removal. The ActAsServerClassMachine pair is the mechanism that used to pick Serial over G1 on small machines — Java 27 removes that choice entirely (JEP 523)." }
     ]
   }
 );
