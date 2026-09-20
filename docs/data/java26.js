@@ -75,7 +75,7 @@ $ java -XX:+UseG1GC -Xmx8g -jar app.jar
       {
         name: "Primitive types in patterns (4th preview)",
         summary: "Pattern matching reaches primitives.",
-        desc: "Pattern matching now spans the primitive/reference divide. instanceof and switch accept primitive type patterns, with safe-cast semantics — i instanceof byte b only matches when the int value fits. Switch over double/long/float gets case labels and guarded patterns just like reference types.",
+        desc: "Pattern matching now spans the primitive/reference divide. instanceof and switch accept primitive type patterns, with safe-cast semantics — i instanceof byte b only matches when the int value fits. Switch over double/long/float gets case labels and guarded patterns just like reference types. Still preview in Java 27, where JEP 532 re-proposed it unchanged.",
         tag: "preview",
         code: {
           lang: "java",
@@ -101,7 +101,7 @@ static String checkStatus(double temperature) {
       {
         name: "Structured concurrency (6th preview)",
         summary: "Joiner gains onTimeout; results return as lists.",
-        desc: "The sixth preview of StructuredTaskScope is a polish pass: Joiner.allSuccessfulOrThrow() now returns a List<T> directly instead of a stream of subtasks; anySuccessfulResultOrThrow() is renamed to anySuccessfulOrThrow(); Joiner gains an onTimeout() hook. The shape is otherwise unchanged from JDK 25.",
+        desc: "The sixth preview of StructuredTaskScope is a polish pass: Joiner.allSuccessfulOrThrow() now returns a List<T> directly instead of a stream of subtasks; anySuccessfulResultOrThrow() is renamed to anySuccessfulOrThrow(); Joiner gains an onTimeout() hook. The shape is otherwise unchanged from JDK 25. Still preview in Java 27 (JEP 533), which reworked it again: onTimeout() became timeout(), the joiners now throw ExecutionException, and awaitAll() was removed — this snippet will not compile unchanged on JDK 27.",
         tag: "preview",
         code: {
           lang: "java",
@@ -121,7 +121,7 @@ static String checkStatus(double temperature) {
       {
         name: "Lazy constants (2nd preview)",
         summary: "StableValue was renamed LazyConstant.",
-        desc: "The thread-safe lazy-init primitive previewed as StableValue in JDK 25 (JEP 502) has been redesigned and renamed. Class is now java.lang.LazyConstant<T>, constructed via LazyConstant.of(Supplier) and dereferenced via .get(). The low-level orElseSet / setOrThrow / trySet methods are gone — the API is now firmly focused on the lazy-constant use case. Lazy list/map factories moved into java.util.List and java.util.Map.",
+        desc: "The thread-safe lazy-init primitive previewed as StableValue in JDK 25 (JEP 502) has been redesigned and renamed. Class is now java.lang.LazyConstant<T>, constructed via LazyConstant.of(Supplier) and dereferenced via .get(). The low-level orElseSet / setOrThrow / trySet methods are gone — the API is now firmly focused on the lazy-constant use case. Lazy list/map factories moved into java.util.List and java.util.Map. Still preview in Java 27 (JEP 531), which removed isInitialized() and orElse(T) and added a Set.ofLazy factory.",
         tag: "preview",
         code: {
           lang: "java",
@@ -144,7 +144,7 @@ class OrderController {
       {
         name: "PEM encodings (2nd preview)",
         summary: "Decode and encode PEM in two lines.",
-        desc: "Second preview of the PEM API. PEMDecoder and PEMEncoder handle PKCS#8 keys, X.509 certificates, CSRs, and CRLs without rolling your own Base64. Iteration since the first preview tightens the parsing contract and the encoder defaults.",
+        desc: "Second preview of the PEM API. PEMDecoder and PEMEncoder handle PKCS#8 keys, X.509 certificates, CSRs, and CRLs without rolling your own Base64. Iteration since the first preview tightens the parsing contract and the encoder defaults. Still preview in Java 27 (JEP 538), which renamed DEREncodable to BinaryEncodable and turned PEM from a record into an ordinary class.",
         tag: "preview",
         code: {
           lang: "java",
@@ -162,7 +162,7 @@ Files.writeString(Path.of("cert.out.pem"), back);
       {
         name: "Vector API (11th incubator)",
         summary: "Still incubating, still gated by Valhalla.",
-        desc: "Eleventh round of incubation for jdk.incubator.vector. Same shape — express SIMD computations portably; HotSpot picks the right vector instructions at runtime. Final standardization keeps waiting on Project Valhalla's value classes.",
+        desc: "Eleventh round of incubation for jdk.incubator.vector. Same shape — express SIMD computations portably; HotSpot picks the right vector instructions at runtime. Final standardization keeps waiting on Project Valhalla's value classes. Still incubating in Java 27 (JEP 537), with no API changes at all — only a SLEEF upgrade to 3.9.0.",
         tag: "preview",
         code: {
           lang: "java",
